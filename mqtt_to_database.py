@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-import csv
+# import csv
 import os
 import threading
 import time
@@ -27,11 +27,11 @@ db_config = {
 }
 
 # 🔹 ตั้งค่า CSV
-csv_filename = "sensor_data.csv"
-if not os.path.exists(csv_filename):
-    with open(csv_filename, mode="w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Timestamp", "Temp", "Hum", "PM2_5", "PM10", "Ozone", "Carbon", "Nitro", "Sulfur", "people_no"])
+# csv_filename = "sensor_data.csv"
+# if not os.path.exists(csv_filename):
+#     with open(csv_filename, mode="w", newline="") as file:
+#         writer = csv.writer(file)
+#         writer.writerow(["Timestamp", "Temp", "Hum", "PM2_5", "PM10", "Ozone", "Carbon", "Nitro", "Sulfur", "people_no"])
 
 # 🔹 ตัวแปรข้อมูลเซ็นเซอร์
 sensor_data = {
@@ -97,13 +97,13 @@ def periodic_save():
         sensor_data["people_no"] = people_no
 
         with csv_lock:
-            with open(csv_filename, mode="a", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow([timestamp] + [sensor_data[key] for key in sensor_data])
-                print("📁 บันทึก CSV:", sensor_data)
+            # with open(csv_filename, mode="a", newline="") as file:
+            #     writer = csv.writer(file)
+            #     writer.writerow([timestamp] + [sensor_data[key] for key in sensor_data])
+            #     print("📁 บันทึก CSV:", sensor_data)
 
             supabase_timer += 1
-            if supabase_timer >= 1:  # 2 รอบ = 20 วินาที
+            if supabase_timer >= 6:  # 2 รอบ = 20 วินาที
                 save_to_data(sensor_data)
                 supabase_timer = 0
 
