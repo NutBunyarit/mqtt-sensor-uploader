@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import os
 import threading
 import time
-import psycopg2
+# import psycopg2
 from datetime import datetime
 import pymysql
 import socket
