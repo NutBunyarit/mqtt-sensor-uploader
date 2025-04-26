@@ -5,8 +5,7 @@ import pymysql
 import socket
 from datetime import datetime
 import random
-import ssl
-
+import requests
 # 🔥 บังคับใช้ IPv4 กัน DNS พัง
 if not hasattr(socket, "_original_getaddrinfo"):
     socket._original_getaddrinfo = socket.getaddrinfo
@@ -16,13 +15,13 @@ socket.getaddrinfo = lambda *args, **kwargs: [
 ]
 
 # 🔹 ข้อมูล Database
-db_config = {
-    'host': 'sql12.freesqldatabase.com',
-    'user': 'sql12774523',
-    'password': 'pQQXJPx74e',
-    'database': 'sql12774523',
-    'port': 3306
-}
+# db_config = {
+#     'host': 'sql12.freesqldatabase.com',
+#     'user': 'sql12774523',
+#     'password': 'pQQXJPx74e',
+#     'database': 'sql12774523',
+#     'port': 3306
+# }
 
 # 🔹 ตัวแปรเก็บข้อมูลเซ็นเซอร์
 sensor_data = {
@@ -42,41 +41,57 @@ csv_lock = threading.Lock()
 def save_to_data(data):
     connection = None
     try:
-        connection = pymysql.connect(**db_config)
-        cursor = connection.cursor()
+        #connection = pymysql.connect(**db_config)
+        #cursor = connection.cursor()
+        url = 'https://aqi-prediction.azurewebsites.net/insert_data
+        payload = {
+            'temp': data.get("Temp"),
+            'hum' : data.get("Hum"),
+            'pm2_5' : data.get("PM2_5"),
+            'pm10' : data.get("PM10"),
+            'ozone' : data.get("Ozone"),
+            'carbon' : data.get("Carbon"),
+            'nitro' : data.get("Nitro"),
+            'sulfur' : data.get("Sulfur"),
+            'people_no' : data.get("people_no"),
+        }
+        
+        response = requests.post(url, json=payload)
 
-        sql = """
-        INSERT INTO sensor_data (
-            timestamp, temp, hum, pm2_5, pm10, ozone, carbon, nitro, sulfur, people_no
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        timestamp = datetime.now()
+        print(response.status_code)  # ดู status code (เช่น 200, 404, 500)
+        print(response.text)         # ดูข้อความที่ได้กลับมา
+        # sql = """
+        # INSERT INTO sensor_data (
+        #     timestamp, temp, hum, pm2_5, pm10, ozone, carbon, nitro, sulfur, people_no
+        # ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        # """
+        #timestamp = datetime.now()
 
         # ✅ แปลง None เป็น NULL อัตโนมัติ
-        values = (
-            timestamp,
-            data.get("Temp"),
-            data.get("Hum"),
-            data.get("PM2_5"),
-            data.get("PM10"),
-            data.get("Ozone"),
-            data.get("Carbon"),
-            data.get("Nitro"),
-            data.get("Sulfur"),
-            data.get("people_no")
-        )
-
-        cursor.execute(sql, values)
-        connection.commit()
+        # values = (
+        #     timestamp,
+        #     data.get("Temp"),
+        #     data.get("Hum"),
+        #     data.get("PM2_5"),
+        #     data.get("PM10"),
+        #     data.get("Ozone"),
+        #     data.get("Carbon"),
+        #     data.get("Nitro"),
+        #     data.get("Sulfur"),
+        #     data.get("people_no")
+        # )
+       
+       # cursor.execute(sql, values)
+      #  connection.commit()
         print(f"✅  บันทึกสำเร็จ (people_no = {data.get('people_no')})")
 
     except Exception as e:
         print("❌  บันทกล้มเหลว:", e)
 
     finally:
-        if connection:
-            cursor.close()
-            connection.close()
+        # if connection:
+        #     cursor.close()
+        #     connection.close()
 
 # 🔹 Thread สำหรับบันทึกข้อมูลเป็นระยะ
 def periodic_save():
