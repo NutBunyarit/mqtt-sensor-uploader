@@ -49,7 +49,7 @@ def save_to_data(data):
         timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         url = 'https://aqi-prediction.azurewebsites.net/insert_data'
         payload = {
-            'timestamp' : timestamp,
+            # 'timestamp' : timestamp,
             'temp': data.get("Temp"),
             'hum' : data.get("Hum"),
             'pm2_5' : data.get("PM2_5"),
