@@ -88,7 +88,7 @@ def save_to_data(data):
     except Exception as e:
         print("❌  บันทกล้มเหลว:", e)
 
-    finally:
+    # finally:
         # if connection:
         #     cursor.close()
         #     connection.close()
