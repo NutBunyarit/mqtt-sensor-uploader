@@ -118,11 +118,13 @@ def on_connect(client, userdata, flags, rc):
         print(f"❌ เชื่อมต่อ MQTT ล้มเหลว: {rc}")
 
 # 🚀 เริ่มโปรแกรม
+
 mqtt_client = mqtt.Client()
+mqtt_client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 
-mqtt_client.connect("broker.emqx.io")
+mqtt_client.connect("broker.emqx.io", port=8883)
 
 threading.Thread(target=periodic_save, daemon=True).start()
 mqtt_client.loop_forever()
