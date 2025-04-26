@@ -6,6 +6,8 @@ import socket
 from datetime import datetime
 import random
 import requests
+import ssl
+
 # 🔥 บังคับใช้ IPv4 กัน DNS พัง
 if not hasattr(socket, "_original_getaddrinfo"):
     socket._original_getaddrinfo = socket.getaddrinfo
