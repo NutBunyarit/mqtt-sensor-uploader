@@ -17,10 +17,11 @@ socket.getaddrinfo = lambda *args, **kwargs: [
 
 # 🔹 ข้อมูล Database
 db_config = {
-    'host': '52.76.27.242',
+    'host': 'sql12.freesqldatabase.com',
     'user': 'sql12774523',
     'password': 'pQQXJPx74e',
-    'database': 'sql12774523'
+    'database': 'sql12774523',
+    'port': 3306
 }
 
 # 🔹 ตัวแปรเก็บข้อมูลเซ็นเซอร์
@@ -88,7 +89,7 @@ def periodic_save():
 
         with csv_lock:
             supabase_timer += 1
-            if supabase_timer >= 6:  # ทุก 60 วินาที
+            if supabase_timer >= 1:  # ทุก 60 วินาที
                 save_to_data(sensor_data)
                 supabase_timer = 0
 
