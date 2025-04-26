@@ -17,7 +17,7 @@ socket.getaddrinfo = lambda *args, **kwargs: [
 
 # 🔹 ข้อมูล Database
 db_config = {
-    'host': 'sql12.freesqldatabase.com',
+    'host': '52.76.27.242',
     'user': 'sql12774523',
     'password': 'pQQXJPx74e',
     'database': 'sql12774523'
