@@ -63,7 +63,7 @@ def save_to_data(data):
         
         response = requests.post(url, json=payload)
         #print()
-        # print(response.status_code)  # ดู status code (เช่น 200, 404, 500)
+        print(response.status_code)  # ดู status code (เช่น 200, 404, 500)
         # print(response.text)         # ดูข้อความที่ได้กลับมา
         # sql = """
         # INSERT INTO sensor_data (
