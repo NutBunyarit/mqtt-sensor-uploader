@@ -46,7 +46,7 @@ def save_to_data(data):
         #connection = pymysql.connect(**db_config)
         #cursor = connection.cursor()
         timestamp = datetime.now()
-        timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         url = 'https://aqi-prediction.azurewebsites.net/insert_data'
         payload = {
             'timestamp' : timestamp,
