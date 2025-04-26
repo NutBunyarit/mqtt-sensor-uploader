@@ -1,13 +1,20 @@
 import paho.mqtt.client as mqtt
-import os
 import threading
 import time
 import pymysql
-from datetime import datetime
 import socket
+from datetime import datetime
 import random
 
-# 🔹 ข้อมูล MySQL Server
+# 🔥 บังคับใช้ IPv4 กัน DNS พัง
+if not hasattr(socket, "_original_getaddrinfo"):
+    socket._original_getaddrinfo = socket.getaddrinfo
+socket.getaddrinfo = lambda *args, **kwargs: [
+    ai for ai in socket._original_getaddrinfo(*args, **kwargs)
+    if ai[0] == socket.AF_INET
+]
+
+# 🔹 ข้อมูล Database
 db_config = {
     'host': 'sql12.freesqldatabase.com',
     'user': 'sql12774523',
@@ -15,7 +22,7 @@ db_config = {
     'database': 'sql12774523'
 }
 
-# 🔹 ตัวแปรข้อมูลเซ็นเซอร์
+# 🔹 ตัวแปรเก็บข้อมูลเซ็นเซอร์
 sensor_data = {
     "Temp": None,
     "Hum": None,
@@ -29,7 +36,7 @@ sensor_data = {
 }
 csv_lock = threading.Lock()
 
-# 🔹 บันทึกลง MySQL Database
+# 🔹 ฟังก์ชันบันทึกลง Database
 def save_to_data(data):
     connection = None
     try:
@@ -43,7 +50,7 @@ def save_to_data(data):
         """
         timestamp = datetime.now()
 
-        # 🔥 แปลง None เป็น SQL NULL ถูกต้อง
+        # ✅ แปลง None เป็น NULL อัตโนมัติ
         values = (
             timestamp,
             data.get("Temp"),
@@ -59,7 +66,7 @@ def save_to_data(data):
 
         cursor.execute(sql, values)
         connection.commit()
-        print(f"✅  บันทึกสำเร็จ (people = {data.get('people_no')})")
+        print(f"✅  บันทึกสำเร็จ (people_no = {data.get('people_no')})")
 
     except Exception as e:
         print("❌  บันทกล้มเหลว:", e)
@@ -69,7 +76,7 @@ def save_to_data(data):
             cursor.close()
             connection.close()
 
-# 🔹 Thread บันทึกข้อมูลทุก 10 วินาที
+# 🔹 Thread สำหรับบันทึกข้อมูลเป็นระยะ
 def periodic_save():
     supabase_timer = 0
     while True:
@@ -84,11 +91,11 @@ def periodic_save():
                 save_to_data(sensor_data)
                 supabase_timer = 0
 
-            # ♻️ Reset ค่าทุกอย่าง
+            # ♻️ ล้างค่าเก่า
             for key in sensor_data:
                 sensor_data[key] = None
 
-# 🔹 รับ MQTT Message
+# 🔹 รับข้อมูลจาก MQTT
 def on_message(client, userdata, msg):
     topic = msg.topic
     try:
@@ -98,22 +105,23 @@ def on_message(client, userdata, msg):
 
     with csv_lock:
         for key in sensor_data:
-            if key in topic:
+            if key.lower() in topic.lower():  # เช็ค topic case-insensitive
                 sensor_data[key] = value
                 break
 
-# 🔹 เชื่อมต่อ MQTT Server
+# 🔹 เชื่อมต่อ MQTT
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("✅ เชื่อมต่อ MQTT สำเร็จ")
         client.subscribe("IQA_Test/#")
     else:
-        print("❌ MQTT เชื่อมไม่สำเร็จ:", rc)
+        print(f"❌ เชื่อมต่อ MQTT ล้มเหลว: {rc}")
 
 # 🚀 เริ่มโปรแกรม
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
+
 mqtt_client.connect("broker.emqx.io")
 
 threading.Thread(target=periodic_save, daemon=True).start()
