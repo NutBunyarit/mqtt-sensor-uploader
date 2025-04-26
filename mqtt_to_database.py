@@ -46,6 +46,7 @@ def save_to_data(data):
         #connection = pymysql.connect(**db_config)
         #cursor = connection.cursor()
         timestamp = datetime.now()
+        timestamp.strftime("%Y-%m-%d %H:%M:%S")
         url = 'https://aqi-prediction.azurewebsites.net/insert_data'
         payload = {
             'timestamp' : timestamp,
@@ -61,9 +62,9 @@ def save_to_data(data):
         }
         
         response = requests.post(url, json=payload)
-
-        print(response.status_code)  # ดู status code (เช่น 200, 404, 500)
-        print(response.text)         # ดูข้อความที่ได้กลับมา
+        #print()
+        # print(response.status_code)  # ดู status code (เช่น 200, 404, 500)
+        # print(response.text)         # ดูข้อความที่ได้กลับมา
         # sql = """
         # INSERT INTO sensor_data (
         #     timestamp, temp, hum, pm2_5, pm10, ozone, carbon, nitro, sulfur, people_no
