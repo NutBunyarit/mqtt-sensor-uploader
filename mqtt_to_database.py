@@ -137,7 +137,7 @@ def on_connect(client, userdata, flags, rc):
 # 🚀 เริ่มโปรแกรม
 
 mqtt_client = mqtt.Client()
-mqtt_client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS)
+mqtt_client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS_CLIENT)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 
