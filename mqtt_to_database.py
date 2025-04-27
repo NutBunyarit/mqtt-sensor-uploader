@@ -48,8 +48,13 @@ def save_to_data(data):
         timestamp = datetime.now()
         timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         url = 'https://aqi-prediction.azurewebsites.net/insert_data'
+        
+        headers = {
+            "Content-Type" : "application/json"
+        }
         payload = {
             # 'timestamp' : timestamp,
+            "timestamp" : timestamp,
             'temp': data.get("Temp"),
             'hum' : data.get("Hum"),
             'pm2_5' : data.get("PM2_5"),
@@ -61,7 +66,7 @@ def save_to_data(data):
             'people_no' : data.get("people_no"),
         }
         
-        response = requests.post(url, json=payload)
+        response = requests.post(url, headers=headers , json=payload)
         #print()
         print(response.status_code)  # ดู status code (เช่น 200, 404, 500)
         # print(response.text)         # ดูข้อความที่ได้กลับมา
