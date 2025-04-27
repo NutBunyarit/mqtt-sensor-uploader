@@ -3,10 +3,11 @@ import threading
 import time
 import pymysql
 import socket
-from datetime import datetime
 import random
 import requests
 import ssl
+from datetime import datetime, timedelta
+
 
 # 🔥 บังคับใช้ IPv4 กัน DNS พัง
 if not hasattr(socket, "_original_getaddrinfo"):
