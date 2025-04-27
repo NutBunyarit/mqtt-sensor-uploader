@@ -41,7 +41,7 @@ csv_lock = threading.Lock()
 
 # 🔹 ฟังก์ชันบันทึกลง Database
 def save_to_data(data):
-    connection = None
+    # connection = None   
     try:
         #connection = pymysql.connect(**db_config)
         #cursor = connection.cursor()
